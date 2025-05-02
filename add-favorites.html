@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Favorites - Task Scheduler</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffffff, #ff0000);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #ff0000;
+      color: #fff;
+      padding: 20px 40px;
+      font-size: 24px;
+      font-weight: 600;
+      border-bottom: 2px solid #ffffff;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(255, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    h2 {
+      color: #ff0000;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      color: #ccc;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: none;
+      background: #222;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px;
+      background-color: #ff0000;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #c62828;
+    }
+
+    .requests {
+      margin-top: 30px;
+    }
+
+    .request-item {
+      background-color: #1c1c1c;
+      padding: 12px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .request-item span {
+      color: #eee;
+    }
+
+    .message {
+      margin-top: 20px;
+      color: #90ee90;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      nav {
+        font-size: 20px;
+        padding: 15px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  Task Scheduler - Favorites
+</nav>
+
+<div class="container">
+  <h2>Send Follow Request</h2>
+  <label for="favoriteInput">Enter Name or Email</label>
+  <input type="text" id="favoriteInput" placeholder="ex: person@example.com or @john" />
+  <button onclick="sendRequest()">Send Follow Request</button>
+
+  <div class="requests">
+    <h2>Accept Follow Requests</h2>
+    <div id="incomingRequests">
+      <!-- Requests will be populated here -->
+    </div>
+  </div>
+
+  <div class="message" id="messageBox"></div>
+</div>
+
+<script>
+  const messageBox = document.getElementById("messageBox");
+  const requestContainer = document.getElementById("incomingRequests");
+
+  // Fetch incoming follow requests from the server
+  async function loadIncomingRequests() {
+    try {
+      const response = await fetch("https://your-server.com/api/follow-requests", {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer YOUR_ACCESS_TOKEN"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch follow requests");
+      }
+
+      const requests = await response.json();
+      requestContainer.innerHTML = "";
+
+      if (requests.length === 0) {
+        requestContainer.innerHTML = "<p>No new follow requests.</p>";
+      } else {
+        requests.forEach((person, index) => {
+          const div = document.createElement("div");
+          div.classList.add("request-item");
+          div.innerHTML = `
+            <span>${person}</span>
+            <button onclick="acceptRequest('${person}', ${index})">Accept</button>
+          `;
+          requestContainer.appendChild(div);
+        });
+      }
+    } catch (error) {
+      console.error("Error loading requests:", error);
+      messageBox.innerText = "Error loading follow requests.";
+    }
+  }
+
+  // Accept a follow request
+  function acceptRequest(person, index) {
+    const accepted = JSON.parse(localStorage.getItem("acceptedFavorites") || "[]");
+    if (!accepted.includes(person)) {
+      accepted.push(person);
+      localStorage.setItem("acceptedFavorites", JSON.stringify(accepted));
+    }
+    messageBox.innerText = `✅ Accepted ${person}`;
+    loadIncomingRequests(); // Refresh the list
+  }
+
+  // Send a follow request
+  function sendRequest() {
+    const input = document.getElementById("favoriteInput").value.trim();
+    if (input === "") {
+      alert("Please enter a valid name or email.");
+      return;
+    }
+
+    // Send the request to the server
+    fetch("https://your-server.com/api/send-follow-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer YOUR_ACCESS_TOKEN"
+      },
+      body: JSON.stringify({ favorite: input })
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Failed to send follow request");
+      }
+      messageBox.innerText = `✅ Follow request sent to ${input}`;
+      document.getElementById("favoriteInput").value = "";
+    })
+    .catch(error => {
+      console.error("Error sending request:", error);
+      alert("Failed to send follow request.");
+    });
+  }
+
+  // Load incoming requests on page load
+  loadIncomingRequests();
+</script>
+
+</body>
+</html>

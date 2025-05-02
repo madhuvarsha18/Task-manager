@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task Scheduler - Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6f8;
+    }
+
+    nav {
+      background-color: #343a40;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 15px;
+    }
+
+    .icon-btn {
+      background: #00bcd4;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s;
+    }
+
+    .icon-btn:hover {
+      background: #0097a7;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    canvas {
+      width: 100% !important;
+      max-height: 400px;
+    }
+
+    @media (max-width: 600px) {
+      .icon-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <h1>Task Scheduler</h1>
+  <div class="btn-container">
+    <button class="icon-btn" onclick="goToFavorites()">
+      <i class="fas fa-heart"></i> Favorites
+    </button>
+    <button class="icon-btn" onclick="goToTasks()">
+      <i class="fas fa-tasks"></i> Add Subtasks
+    </button>
+  </div>
+</nav>
+
+<div class="container">
+  <h2>User Performance (Completed Subtasks)</h2>
+  <canvas id="performanceChart"></canvas>
+</div>
+
+<script>
+  function goToFavorites() {
+    window.location.href = "add-favorites.html";
+  }
+
+  function goToTasks() {
+    window.location.href = "task-assign.html";
+  }
+
+  // Simulate performance data
+  const completedTasks = JSON.parse(localStorage.getItem("completedTasks") || "[]");
+
+  // Count subtasks completed by date (for example)
+  const dailyCounts = {};
+
+  completedTasks.forEach(task => {
+    const date = task.date || new Date().toISOString().slice(0, 10);
+    dailyCounts[date] = (dailyCounts[date] || 0) + 1;
+  });
+
+  const labels = Object.keys(dailyCounts);
+  const data = Object.values(dailyCounts);
+
+  const ctx = document.getElementById('performanceChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Subtasks Completed',
+        data,
+        fill: false,
+        borderColor: '#00bcd4',
+        backgroundColor: '#00bcd4',
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          precision: 0
+        }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
