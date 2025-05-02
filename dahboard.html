@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Scheduler with Favorite Assignment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+    }
+
+    nav {
+      background-color: #343a40;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    nav h1 {
+      font-size: 20px;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+      border: none;
+      padding: 8px 12px;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .subtask-item, .favorite-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .subtask-item input, .favorite-item input {
+      flex: 1;
+    }
+
+    .assigned-box, .upload-box {
+      background-color: #e9f7ef;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    .btn {
+      cursor: pointer;
+    }
+
+    .add-btn {
+      background-color: #007bff;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .assign-btn {
+      background-color: #17a2b8;
+      color: white;
+    }
+
+    .submit-btn {
+      background-color: #28a745;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <h1>Welcome, <span id="username">User</span></h1>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</nav>
+
+<div class="container">
+  <h2>Create Task & Assign via Favorite</h2>
+
+  <input type="text" id="mainTask" placeholder="Main Task Title">
+
+  <h3>Subtasks</h3>
+  <div id="subtasksContainer">
+    <div class="subtask-item">
+      <input type="text" placeholder="Subtask 1">
+    </div>
+  </div>
+  <button class="add-btn btn" onclick="addSubtask()">+ Add Subtask</button>
+
+  <h3>Favorite People (Names or Emails)</h3>
+  <div id="favoritesContainer">
+    <div class="favorite-item">
+      <input type="text" placeholder="Favorite Person 1">
+    </div>
+  </div>
+  <button class="add-btn btn" onclick="addFavorite()">+ Add Favorite Person</button>
+
+  <button class="assign-btn btn" onclick="assignRandom()">🎲 Assign Task</button>
+
+  <div class="assigned-box" id="assignedBox">
+    <p><strong>Assigned Subtask:</strong> <span id="assignedSubtask"></span></p>
+    <p><strong>Favorite Person:</strong> <span id="assignedPerson"></span></p>
+  </div>
+
+  <div class="upload-box" id="uploadBox">
+    <label>Upload proof (image):</label>
+    <input type="file" id="proofUpload" accept="image/*">
+    <button class="submit-btn btn" onclick="submitProof()">Submit Proof</button>
+  </div>
+</div>
+
+<script>
+  let subtaskCount = 1;
+  let favoriteCount = 1;
+
+  function logout() {
+    localStorage.removeItem('username');
+    window.location.href = 'index.html';
+  }
+
+  document.getElementById('username').innerText = localStorage.getItem('username') || 'User';
+
+  function addSubtask() {
+    subtaskCount++;
+    const container = document.getElementById('subtasksContainer');
+    const div = document.createElement('div');
+    div.className = 'subtask-item';
+    div.innerHTML = `<input type="text" placeholder="Subtask ${subtaskCount}">`;
+    container.appendChild(div);
+  }
+
+  function addFavorite() {
+    favoriteCount++;
+    const container = document.getElementById('favoritesContainer');
+    const div = document.createElement('div');
+    div.className = 'favorite-item';
+    div.innerHTML = `<input type="text" placeholder="Favorite Person ${favoriteCount}">`;
+    container.appendChild(div);
+  }
+
+  function assignRandom() {
+    const subtaskInputs = document.querySelectorAll('#subtasksContainer input');
+    const favoriteInputs = document.querySelectorAll('#favoritesContainer input');
+
+    const subtasks = Array.from(subtaskInputs).map(i => i.value.trim()).filter(Boolean);
+    const favorites = JSON.parse(localStorage.getItem('acceptedFavorites') || '[]');
+
+
+    if (!subtasks.length || !favorites.length) {
+      alert("Please enter at least one subtask and one favorite person.");
+      return;
+    }
+
+    const randomSubtask = subtasks[Math.floor(Math.random() * subtasks.length)];
+    const randomPerson = favorites[Math.floor(Math.random() * favorites.length)];
+
+    document.getElementById('assignedSubtask').innerText = randomSubtask;
+    document.getElementById('assignedPerson').innerText = randomPerson;
+    document.getElementById('assignedBox').style.display = 'block';
+    document.getElementById('uploadBox').style.display = 'block';
+
+    // Save for submission
+    localStorage.setItem('assignedSubtask', randomSubtask);
+    localStorage.setItem('favoritePerson', randomPerson);
+  }
+
+  function submitProof() {
+    const file = document.getElementById('proofUpload').files[0];
+    const subtask = localStorage.getItem('assignedSubtask');
+    const person = localStorage.getItem('favoritePerson');
+
+    if (!file) {
+      alert("Please upload a proof image.");
+      return;
+    }
+
+    alert(`Proof for "${subtask}" submitted to ${person}. Thank you!`);
+    document.getElementById('uploadBox').style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
