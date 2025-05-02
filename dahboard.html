@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Task Scheduler with Favorite Assignment</title>
+  <title>Task Scheduler - Assign Subtasks</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -12,14 +13,13 @@
 
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom right, #ffeef2, #f8bbd0, #b2ebf2); /* Soft pastel gradient */
+      background: linear-gradient(to bottom right, #ffeef2, #f8bbd0, #b2ebf2);
       color: #fff;
       min-height: 100vh;
     }
 
     nav {
-      background-color: rgba(255, 255, 255, 0.15); /* Light transparent background */
+      background-color: rgba(255, 255, 255, 0.15);
       color: #fff;
       padding: 20px 40px;
       font-size: 24px;
@@ -33,7 +33,7 @@
       max-width: 700px;
       margin: 40px auto;
       padding: 30px;
-      background: rgba(255, 255, 255, 0.1); /* Soft transparent background */
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 16px;
       box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
@@ -45,26 +45,26 @@
       font-weight: 600;
     }
 
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       padding: 12px;
       margin-top: 5px;
       border-radius: 8px;
       border: none;
-      background: #f3e5f5; /* Light pastel background for inputs */
-      color: #555; /* Soft grey for input text */
+      background: #f3e5f5;
+      color: #555;
       font-size: 16px;
     }
 
-    input:focus, textarea:focus {
+    input:focus, textarea:focus, select:focus {
       outline: none;
-      border: 1px solid #f48fb1; /* Soft pink border on focus */
+      border: 1px solid #f48fb1;
     }
 
     button {
       margin-top: 15px;
       padding: 12px;
-      background-color: #f48fb1; /* Light pink button color */
+      background-color: #f48fb1;
       color: white;
       font-size: 16px;
       border: none;
@@ -74,26 +74,11 @@
     }
 
     button:hover {
-      background-color: #ec407a; /* Darker pink on hover */
-    }
-
-    .add-btn {
-      background-color: #f48fb1;
-      color: white;
-    }
-
-    .assign-btn {
       background-color: #ec407a;
-      color: white;
-    }
-
-    .submit-btn {
-      background-color: #66bb6a;
-      color: white;
     }
 
     .assigned-box, .upload-box {
-      background-color: rgba(255, 255, 255, 0.15); /* Light transparent background */
+      background-color: rgba(255, 255, 255, 0.15);
       padding: 20px;
       margin-top: 20px;
       border-radius: 12px;
@@ -102,12 +87,12 @@
 
     #assignedSubtask, #assignedPerson {
       font-weight: 600;
-      color: #f48fb1; /* Soft pink for task and person labels */
+      color: #f48fb1;
     }
 
     .message {
       margin-top: 20px;
-      color: #90ee90; /* Light green for success messages */
+      color: #90ee90;
       text-align: center;
     }
 
@@ -127,83 +112,94 @@
 <body>
 
 <nav>
-  <h1>Welcome, <span id="username">User</span></h1>
+  <h1>Assign Task - <span id="username">User</span></h1>
 </nav>
 
 <div class="container">
-  <h2>Create Task & Assign via Favorite</h2>
+  <h2>Create Task & Assign Subtasks</h2>
 
   <input type="text" id="mainTask" placeholder="Main Task Title">
 
   <h3>Subtasks</h3>
   <div id="subtasksContainer">
-    <div class="subtask-item">
-      <input type="text" placeholder="Subtask 1">
-    </div>
+    <input type="text" placeholder="Subtask 1">
   </div>
-  <button class="add-btn btn" onclick="addSubtask()">+ Add Subtask</button>
+  <button onclick="addSubtask()">+ Add Subtask</button>
 
   <h3>Favorite People (Accepted Only)</h3>
-  <div id="favoritesContainer">
-    <div class="favorite-item">
-      <input type="text" placeholder="Favorite Person 1 (auto-filled from accepted)">
-    </div>
-  </div>
-  <button class="assign-btn btn" onclick="assignRandom()">🎲 Assign Task</button>
+  <select id="favoriteSelect">
+    <!-- Options will be inserted dynamically -->
+  </select>
+
+  <button onclick="assignTask()">🎲 Assign Random Task</button>
 
   <div class="assigned-box" id="assignedBox" style="display: none;">
     <p><strong>Assigned Subtask:</strong> <span id="assignedSubtask"></span></p>
-    <p><strong>Favorite Person:</strong> <span id="assignedPerson"></span></p>
+    <p><strong>Assigned To:</strong> <span id="assignedPerson"></span></p>
   </div>
 
   <div class="upload-box" id="uploadBox" style="display: none;">
     <label>Upload proof (image):</label>
     <input type="file" id="proofUpload" accept="image/*">
-    <button class="submit-btn btn" onclick="submitProof()">Submit Proof</button>
+    <button onclick="submitProof()">Submit Proof</button>
   </div>
 
   <div class="message" id="message"></div>
 </div>
 
 <script>
-  let subtaskCount = 1;
-
-  function logout() {
-    localStorage.removeItem('username');
-    window.location.href = 'index.html';
-  }
-
   document.getElementById('username').innerText = localStorage.getItem('username') || 'User';
+
+  let subtaskCount = 1;
 
   function addSubtask() {
     subtaskCount++;
-    const container = document.getElementById('subtasksContainer');
-    const div = document.createElement('div');
-    div.className = 'subtask-item';
-    div.innerHTML = `<input type="text" placeholder="Subtask ${subtaskCount}">`;
-    container.appendChild(div);
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = `Subtask ${subtaskCount}`;
+    document.getElementById('subtasksContainer').appendChild(input);
   }
 
-  function assignRandom() {
+  function populateFavorites() {
+    const select = document.getElementById('favoriteSelect');
+    select.innerHTML = '';
+
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    if (favorites.length === 0) {
+      const opt = document.createElement('option');
+      opt.textContent = 'No accepted favorites found';
+      opt.disabled = true;
+      select.appendChild(opt);
+      return;
+    }
+
+    favorites.forEach(person => {
+      const opt = document.createElement('option');
+      opt.value = person;
+      opt.textContent = person;
+      select.appendChild(opt);
+    });
+  }
+
+  function assignTask() {
     const subtaskInputs = document.querySelectorAll('#subtasksContainer input');
     const subtasks = Array.from(subtaskInputs).map(i => i.value.trim()).filter(Boolean);
-    const favorites = JSON.parse(localStorage.getItem('acceptedFavorites') || '[]');
+    const selectedPerson = document.getElementById('favoriteSelect').value;
 
-    if (!subtasks.length || !favorites.length) {
-      alert("Please enter at least one subtask and ensure you have accepted favorites.");
+    if (!subtasks.length || !selectedPerson) {
+      alert("Add at least one subtask and have accepted favorites.");
       return;
     }
 
     const randomSubtask = subtasks[Math.floor(Math.random() * subtasks.length)];
-    const randomPerson = favorites[Math.floor(Math.random() * favorites.length)];
 
-    document.getElementById('assignedSubtask').innerText = randomSubtask;
-    document.getElementById('assignedPerson').innerText = randomPerson;
+    document.getElementById('assignedSubtask').textContent = randomSubtask;
+    document.getElementById('assignedPerson').textContent = selectedPerson;
     document.getElementById('assignedBox').style.display = 'block';
     document.getElementById('uploadBox').style.display = 'block';
 
     localStorage.setItem('assignedSubtask', randomSubtask);
-    localStorage.setItem('favoritePerson', randomPerson);
+    localStorage.setItem('favoritePerson', selectedPerson);
   }
 
   function submitProof() {
@@ -212,13 +208,25 @@
     const person = localStorage.getItem('favoritePerson');
 
     if (!file) {
-      alert("Please upload a proof image.");
+      alert("Please upload an image as proof.");
       return;
     }
 
-    document.getElementById('message').innerText = `Proof for "${subtask}" submitted to ${person}. Thank you!`;
+    const taskEntry = {
+      date: new Date().toISOString().slice(0, 10),
+      subtask,
+      person
+    };
+
+    const completed = JSON.parse(localStorage.getItem('completedTasks') || '[]');
+    completed.push(taskEntry);
+    localStorage.setItem('completedTasks', JSON.stringify(completed));
+
+    document.getElementById('message').innerText = `✅ Proof submitted for "${subtask}" assigned to ${person}.`;
     document.getElementById('uploadBox').style.display = 'none';
   }
+
+  window.onload = populateFavorites;
 </script>
 
 </body>

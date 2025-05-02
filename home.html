@@ -1,3 +1,4 @@
+<!-- home.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,7 +54,7 @@
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 900px;
       margin: 40px auto;
       padding: 20px;
       background: white;
@@ -108,63 +109,64 @@
     window.location.href = "dahboard.html";
   }
 
-  // Simulate performance data
-  const completedTasks = JSON.parse(localStorage.getItem("completedTasks") || "[]");
-
-  // Count subtasks completed by date
-  const dailyCounts = {};
-  completedTasks.forEach(task => {
-    const date = task.date || new Date().toISOString().slice(0, 10);
-    dailyCounts[date] = (dailyCounts[date] || 0) + 1;
-  });
-
-  const labels = Object.keys(dailyCounts);
-  const data = Object.values(dailyCounts);
-
   const ctx = document.getElementById('performanceChart').getContext('2d');
 
-  // Gradient for bar fill
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, '#f8bbd0');
-  gradient.addColorStop(1, '#80deea');
+  function renderChart() {
+    const completedTasks = JSON.parse(localStorage.getItem("completedTasks") || "[]");
 
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Subtasks Completed',
-        data,
-        backgroundColor: gradient,
-        borderRadius: 6,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#f48fb1',
-          titleColor: '#fff',
-          bodyColor: '#fff'
-        }
+    const dailyCounts = {};
+    completedTasks.forEach(task => {
+      const date = task.date || new Date().toISOString().slice(0, 10);
+      dailyCounts[date] = (dailyCounts[date] || 0) + 1;
+    });
+
+    const labels = Object.keys(dailyCounts);
+    const data = Object.values(dailyCounts);
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, '#f8bbd0');
+    gradient.addColorStop(1, '#80deea');
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Subtasks Completed',
+          data,
+          backgroundColor: gradient,
+          borderRadius: 6,
+          borderSkipped: false
+        }]
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            color: '#d81b60'
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#f48fb1',
+            titleColor: '#fff',
+            bodyColor: '#fff'
           }
         },
-        x: {
-          ticks: {
-            color: '#d81b60'
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#d81b60'
+            }
+          },
+          x: {
+            ticks: {
+              color: '#d81b60'
+            }
           }
         }
       }
-    }
-  });
+    });
+  }
+
+  renderChart();
 </script>
 
 </body>

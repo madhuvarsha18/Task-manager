@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,14 +7,16 @@
   <title>Task Scheduler - Login / Sign Up</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --primary: #f48fb1;
+      --accent: #80deea;
+      --bg: linear-gradient(270deg, #ffeef2, #f8bbd0, #80deea);
     }
 
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(270deg, #ffeef2, #f8bbd0, #80deea);
+      background: var(--bg);
       background-size: 600% 600%;
       animation: gradientBG 15s ease infinite;
       display: flex;
@@ -34,37 +37,24 @@
       position: absolute;
       top: 0;
       width: 100%;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 15px 30px;
-      display: flex;
-      justify-content: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    nav h1 {
-      color: white;
-      font-size: 28px;
-      margin: 0;
-      text-shadow: 1px 1px 3px #000;
+      text-align: center;
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
     }
 
     .container {
-      background-color: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
-      padding: 30px 40px;
       border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-      max-width: 400px;
+      padding: 30px;
       width: 90%;
+      max-width: 400px;
       text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
     }
 
-    h2 {
-      margin-bottom: 20px;
-      color: #ffffff;
-    }
-
-    input {
+    input, button {
       width: 100%;
       padding: 12px;
       margin: 10px 0;
@@ -73,52 +63,36 @@
       font-size: 16px;
     }
 
+    input {
+      background: white;
+      color: #333;
+    }
+
     button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 8px;
-      background-color: #f48fb1;
+      background: var(--primary);
       color: white;
-      font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
 
     button:hover {
-      background-color: #ec407a;
+      background: #ec407a;
     }
 
     .toggle {
-      text-align: center;
-      margin-top: 12px;
-      cursor: pointer;
+      margin-top: 10px;
       font-size: 14px;
-      color: #ffffff;
+      cursor: pointer;
       text-decoration: underline;
     }
 
     .hidden {
       display: none;
     }
-
-    @media (max-width: 600px) {
-      nav h1 {
-        font-size: 22px;
-      }
-
-      .container {
-        padding: 20px;
-      }
-    }
   </style>
 </head>
 <body>
 
-<nav>
-  <h1>Task Scheduler</h1>
-</nav>
+<nav>Task Scheduler</nav>
 
 <div class="container">
   <div id="loginForm">
@@ -152,27 +126,20 @@
   function signup() {
     const username = document.getElementById("signupUsername").value;
     const password = document.getElementById("signupPassword").value;
-    if (!username || !password) {
-      alert("Please enter username and password");
-      return;
-    }
+    if (!username || !password) return alert("Please enter all fields.");
     localStorage.setItem("username", username);
     localStorage.setItem("password", password);
-    alert("Account created! Please login.");
+    alert("Signup successful! Please login.");
     showLogin();
   }
 
   function login() {
     const username = document.getElementById("loginUsername").value;
     const password = document.getElementById("loginPassword").value;
-    const storedUser = localStorage.getItem("username");
-    const storedPass = localStorage.getItem("password");
-
-    if (username === storedUser && password === storedPass) {
-      localStorage.setItem("username", username);
+    if (username === localStorage.getItem("username") && password === localStorage.getItem("password")) {
       window.location.href = "home.html";
     } else {
-      alert("Invalid credentials");
+      alert("Invalid credentials.");
     }
   }
 </script>
