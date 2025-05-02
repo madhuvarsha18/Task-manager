@@ -10,16 +10,18 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #f4f6f8;
+      background: linear-gradient(135deg, #ffeef2, #e0f7fa);
+      min-height: 100vh;
     }
 
     nav {
-      background-color: #343a40;
+      background-color: #f48fb1;
       color: white;
       padding: 15px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
     nav h1 {
@@ -33,7 +35,7 @@
     }
 
     .icon-btn {
-      background: #00bcd4;
+      background: #f06292;
       color: white;
       padding: 10px 20px;
       border: none;
@@ -47,7 +49,7 @@
     }
 
     .icon-btn:hover {
-      background: #0097a7;
+      background: #ec407a;
     }
 
     .container {
@@ -62,6 +64,7 @@
     h2 {
       margin-bottom: 20px;
       text-align: center;
+      color: #d81b60;
     }
 
     canvas {
@@ -108,9 +111,8 @@
   // Simulate performance data
   const completedTasks = JSON.parse(localStorage.getItem("completedTasks") || "[]");
 
-  // Count subtasks completed by date (for example)
+  // Count subtasks completed by date
   const dailyCounts = {};
-
   completedTasks.forEach(task => {
     const date = task.date || new Date().toISOString().slice(0, 10);
     dailyCounts[date] = (dailyCounts[date] || 0) + 1;
@@ -120,25 +122,45 @@
   const data = Object.values(dailyCounts);
 
   const ctx = document.getElementById('performanceChart').getContext('2d');
+
+  // Gradient for bar fill
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, '#f8bbd0');
+  gradient.addColorStop(1, '#80deea');
+
   new Chart(ctx, {
-    type: 'line',
+    type: 'bar',
     data: {
       labels,
       datasets: [{
         label: 'Subtasks Completed',
         data,
-        fill: false,
-        borderColor: '#00bcd4',
-        backgroundColor: '#00bcd4',
-        tension: 0.2
+        backgroundColor: gradient,
+        borderRadius: 6,
+        borderSkipped: false
       }]
     },
     options: {
       responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#f48fb1',
+          titleColor: '#fff',
+          bodyColor: '#fff'
+        }
+      },
       scales: {
         y: {
           beginAtZero: true,
-          precision: 0
+          ticks: {
+            color: '#d81b60'
+          }
+        },
+        x: {
+          ticks: {
+            color: '#d81b60'
+          }
         }
       }
     }

@@ -5,93 +5,122 @@
   <title>Task Scheduler with Favorite Assignment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
-      background: #f4f4f4;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #ffeef2, #f8bbd0, #b2ebf2); /* Soft pastel gradient */
+      color: #fff;
+      min-height: 100vh;
     }
 
     nav {
-      background-color: #343a40;
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    nav h1 {
-      font-size: 20px;
-    }
-
-    .logout-btn {
-      background: #dc3545;
-      border: none;
-      padding: 8px 12px;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.15); /* Light transparent background */
+      color: #fff;
+      padding: 20px 40px;
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      backdrop-filter: blur(6px);
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     }
 
     .container {
-      max-width: 900px;
-      margin: 30px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.1); /* Soft transparent background */
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
     }
 
-    h2 {
-      text-align: center;
+    h2, h3 {
+      color: #fff;
+      margin-bottom: 20px;
+      font-weight: 600;
     }
 
-    input, textarea, button {
+    input, textarea {
       width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: none;
+      background: #f3e5f5; /* Light pastel background for inputs */
+      color: #555; /* Soft grey for input text */
       font-size: 16px;
     }
 
-    .subtask-item, .favorite-item {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 8px;
+    input:focus, textarea:focus {
+      outline: none;
+      border: 1px solid #f48fb1; /* Soft pink border on focus */
     }
 
-    .subtask-item input, .favorite-item input {
-      flex: 1;
-    }
-
-    .assigned-box, .upload-box {
-      background-color: #e9f7ef;
-      padding: 15px;
-      border-radius: 5px;
+    button {
       margin-top: 15px;
-      display: none;
+      padding: 12px;
+      background-color: #f48fb1; /* Light pink button color */
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
 
-    .btn {
-      cursor: pointer;
+    button:hover {
+      background-color: #ec407a; /* Darker pink on hover */
     }
 
     .add-btn {
-      background-color: #007bff;
+      background-color: #f48fb1;
       color: white;
-      margin-top: 10px;
     }
 
     .assign-btn {
-      background-color: #17a2b8;
+      background-color: #ec407a;
       color: white;
     }
 
     .submit-btn {
-      background-color: #28a745;
+      background-color: #66bb6a;
       color: white;
+    }
+
+    .assigned-box, .upload-box {
+      background-color: rgba(255, 255, 255, 0.15); /* Light transparent background */
+      padding: 20px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.1);
+    }
+
+    #assignedSubtask, #assignedPerson {
+      font-weight: 600;
+      color: #f48fb1; /* Soft pink for task and person labels */
+    }
+
+    .message {
+      margin-top: 20px;
+      color: #90ee90; /* Light green for success messages */
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+
+      nav {
+        font-size: 20px;
+        padding: 15px 20px;
+      }
     }
   </style>
 </head>
@@ -99,7 +128,6 @@
 
 <nav>
   <h1>Welcome, <span id="username">User</span></h1>
-  <button class="logout-btn" onclick="logout()">Logout</button>
 </nav>
 
 <div class="container">
@@ -115,31 +143,30 @@
   </div>
   <button class="add-btn btn" onclick="addSubtask()">+ Add Subtask</button>
 
-  <h3>Favorite People (Names or Emails)</h3>
+  <h3>Favorite People (Accepted Only)</h3>
   <div id="favoritesContainer">
     <div class="favorite-item">
-      <input type="text" placeholder="Favorite Person 1">
+      <input type="text" placeholder="Favorite Person 1 (auto-filled from accepted)">
     </div>
   </div>
-  <button class="add-btn btn" onclick="addFavorite()">+ Add Favorite Person</button>
-
   <button class="assign-btn btn" onclick="assignRandom()">🎲 Assign Task</button>
 
-  <div class="assigned-box" id="assignedBox">
+  <div class="assigned-box" id="assignedBox" style="display: none;">
     <p><strong>Assigned Subtask:</strong> <span id="assignedSubtask"></span></p>
     <p><strong>Favorite Person:</strong> <span id="assignedPerson"></span></p>
   </div>
 
-  <div class="upload-box" id="uploadBox">
+  <div class="upload-box" id="uploadBox" style="display: none;">
     <label>Upload proof (image):</label>
     <input type="file" id="proofUpload" accept="image/*">
     <button class="submit-btn btn" onclick="submitProof()">Submit Proof</button>
   </div>
+
+  <div class="message" id="message"></div>
 </div>
 
 <script>
   let subtaskCount = 1;
-  let favoriteCount = 1;
 
   function logout() {
     localStorage.removeItem('username');
@@ -157,25 +184,13 @@
     container.appendChild(div);
   }
 
-  function addFavorite() {
-    favoriteCount++;
-    const container = document.getElementById('favoritesContainer');
-    const div = document.createElement('div');
-    div.className = 'favorite-item';
-    div.innerHTML = `<input type="text" placeholder="Favorite Person ${favoriteCount}">`;
-    container.appendChild(div);
-  }
-
   function assignRandom() {
     const subtaskInputs = document.querySelectorAll('#subtasksContainer input');
-    const favoriteInputs = document.querySelectorAll('#favoritesContainer input');
-
     const subtasks = Array.from(subtaskInputs).map(i => i.value.trim()).filter(Boolean);
     const favorites = JSON.parse(localStorage.getItem('acceptedFavorites') || '[]');
 
-
     if (!subtasks.length || !favorites.length) {
-      alert("Please enter at least one subtask and one favorite person.");
+      alert("Please enter at least one subtask and ensure you have accepted favorites.");
       return;
     }
 
@@ -187,7 +202,6 @@
     document.getElementById('assignedBox').style.display = 'block';
     document.getElementById('uploadBox').style.display = 'block';
 
-    // Save for submission
     localStorage.setItem('assignedSubtask', randomSubtask);
     localStorage.setItem('favoritePerson', randomPerson);
   }
@@ -202,7 +216,7 @@
       return;
     }
 
-    alert(`Proof for "${subtask}" submitted to ${person}. Thank you!`);
+    document.getElementById('message').innerText = `Proof for "${subtask}" submitted to ${person}. Thank you!`;
     document.getElementById('uploadBox').style.display = 'none';
   }
 </script>
