@@ -1,114 +1,154 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Task Scheduler - Login / Sign Up</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary: #f48fb1;
-      --accent: #80deea;
-      --bg: linear-gradient(270deg, #ffeef2, #f8bbd0, #80deea);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: var(--bg);
-      background-size: 600% 600%;
-      animation: gradientBG 15s ease infinite;
-      display: flex;
-      flex-direction: column;
       height: 100vh;
+      background-color: #fafafa;
+      display: flex;
       justify-content: center;
       align-items: center;
-      color: white;
     }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    nav {
-      position: absolute;
-      top: 0;
-      width: 100%;
-      text-align: center;
-      padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      border-radius: 16px;
-      padding: 30px;
+    .wrapper {
+      display: flex;
       width: 90%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      max-width: 1000px;
+      height: 600px;
+      background: white;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      overflow: hidden;
     }
 
-    input, button {
+    .image-side {
+      flex: 1;
+      background: url('https://source.unsplash.com/600x600/?technology,task') center/cover no-repeat;
+    }
+
+    .form-side {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .form-box {
       width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .form-box h1 {
+      color: #262626;
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input {
       padding: 12px;
-      margin: 10px 0;
-      border: none;
+      margin: 8px 0;
+      border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 16px;
     }
 
-    input {
-      background: white;
-      color: #333;
-    }
-
     button {
-      background: var(--primary);
+      padding: 12px;
+      background-color: #0095f6;
       color: white;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
     }
 
     button:hover {
-      background: #ec407a;
+      background-color: #007bdb;
     }
 
     .toggle {
-      margin-top: 10px;
+      text-align: center;
+      margin-top: 16px;
+      color: #555;
       font-size: 14px;
       cursor: pointer;
-      text-decoration: underline;
+    }
+
+    .toggle span {
+      color: #0095f6;
+      font-weight: 600;
     }
 
     .hidden {
       display: none;
     }
+
+    @media (max-width: 768px) {
+      .wrapper {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .image-side {
+        height: 250px;
+      }
+
+      .form-side {
+        padding: 20px;
+      }
+
+      .form-box {
+        max-width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
-<nav>Task Scheduler</nav>
+<div class="wrapper">
+  <div class="image-side"></div>
+  <div class="form-side">
+    <div class="form-box">
+      <div id="loginForm">
+        <h1>Log In</h1>
+        <form onsubmit="event.preventDefault(); login();">
+          <input type="text" id="loginUsername" placeholder="Username" />
+          <input type="password" id="loginPassword" placeholder="Password" />
+          <button type="submit">Log In</button>
+        </form>
+        <div class="toggle">Don't have an account? <span onclick="showSignUp()">Sign Up</span></div>
+      </div>
 
-<div class="container">
-  <div id="loginForm">
-    <h2>Login</h2>
-    <input type="text" id="loginUsername" placeholder="Username" />
-    <input type="password" id="loginPassword" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <div class="toggle" onclick="showSignUp()">Don't have an account? Sign Up</div>
-  </div>
-
-  <div id="signupForm" class="hidden">
-    <h2>Sign Up</h2>
-    <input type="text" id="signupUsername" placeholder="Username" />
-    <input type="password" id="signupPassword" placeholder="Password" />
-    <button onclick="signup()">Sign Up</button>
-    <div class="toggle" onclick="showLogin()">Already have an account? Login</div>
+      <div id="signupForm" class="hidden">
+        <h1>Sign Up</h1>
+        <form onsubmit="event.preventDefault(); signup();">
+          <input type="text" id="signupUsername" placeholder="Username" />
+          <input type="password" id="signupPassword" placeholder="Password" />
+          <button type="submit">Sign Up</button>
+        </form>
+        <div class="toggle">Already have an account? <span onclick="showLogin()">Log In</span></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -137,7 +177,8 @@
     const username = document.getElementById("loginUsername").value;
     const password = document.getElementById("loginPassword").value;
     if (username === localStorage.getItem("username") && password === localStorage.getItem("password")) {
-      window.location.href = "home.html";
+      alert("Login successful!");
+      // window.location.href = "home.html"; // Uncomment if needed
     } else {
       alert("Invalid credentials.");
     }
