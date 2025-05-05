@@ -1,9 +1,8 @@
-<!-- favorites.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Manage Favorites</title>
+  <title>Favorites - Enhanced Interface</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <style>
@@ -14,55 +13,98 @@
 
     body {
       margin: 0;
-      background: linear-gradient(to bottom right, #ffe0e6, #b2ebf2);
-      color: #333;
       min-height: 100vh;
+      background: linear-gradient(to bottom right, #f8bbd0, #b2ebf2,#f8bbd0);
+      color: #333;
     }
 
     nav {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.15);
       color: #fff;
-      padding: 20px 40px;
+      padding: 20px;
       font-size: 24px;
       font-weight: 600;
       text-align: center;
       backdrop-filter: blur(6px);
-      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .profile-container {
+      max-width: 700px;
+      margin: 30px auto 0;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      text-align: center;
+    }
+
+    .photo-placeholder {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #fff3e0;
+      margin: 0 auto 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+      color: #888;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .photo-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    #uploadPhoto {
+      margin-top: 10px;
     }
 
     .container {
       max-width: 700px;
-      margin: 40px auto;
-      padding: 30px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
+      margin: 20px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
-    h2 {
-      color: #444;
-      margin-bottom: 20px;
+    .card {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(6px);
+    }
+
+    h2, h3 {
+      margin-top: 0;
       text-align: center;
+      color: #333;
     }
 
     input[type="text"] {
       width: 100%;
       padding: 12px;
       border: none;
-      border-radius: 8px;
-      margin-top: 10px;
+      border-radius: 10px;
       font-size: 16px;
       background: #fff3e0;
       color: #444;
+      margin-bottom: 10px;
     }
 
     button {
-      margin-top: 10px;
-      padding: 10px 20px;
+      padding: 10px 16px;
       background-color: #f48fb1;
       color: white;
-      font-size: 16px;
+      font-size: 14px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -73,44 +115,59 @@
       background-color: #ec407a;
     }
 
-    .section {
-      margin-top: 30px;
-    }
-
     ul {
       list-style-type: none;
       padding-left: 0;
+      margin: 0;
     }
 
     li {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 10px;
-      border-radius: 10px;
-      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
 
-    li span {
-      font-weight: 500;
+    .btn-group {
+      display: flex;
+      gap: 10px;
     }
 
     .btn-small {
-      font-size: 14px;
       padding: 6px 12px;
-      margin-left: 8px;
+      font-size: 13px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .accept-btn {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    .reject-btn {
+      background-color: #f44336;
+      color: white;
     }
 
     @media (max-width: 600px) {
-      .container {
+      nav {
+        font-size: 20px;
+        padding: 15px;
+      }
+
+      .container, .profile-container {
         margin: 20px;
         padding: 20px;
       }
 
-      nav {
-        font-size: 20px;
-        padding: 15px 20px;
+      .photo-placeholder {
+        width: 80px;
+        height: 80px;
       }
     }
   </style>
@@ -118,25 +175,33 @@
 <body>
 
 <nav>
-  Manage Favorites - <span id="username">User</span>
+  Favorites of <span id="username">User</span>
 </nav>
 
-<div class="container">
-  <h2>Add a Favorite</h2>
-  <input type="text" id="favoriteInput" placeholder="Enter name to follow">
-  <button onclick="sendFollow()">Send Follow Request</button>
+<div class="profile-container">
+  <div class="photo-placeholder" id="photoPlaceholder">+</div>
+  <input type="file" id="uploadPhoto" accept="image/*">
+  <p style="margin-top: 10px;">Upload your profile picture</p>
+</div>
 
-  <div class="section">
-    <h3>Pending Requests</h3>
+<div class="container">
+  <div class="card">
+    <h2>Send Follow Request</h2>
+    <input type="text" id="favoriteInput" placeholder="Enter name to follow">
+    <center><button onclick="sendFollow()">Send</button></center>
+  </div>
+
+  <div class="card">
+    <h3>Pending Follow Requests</h3>
     <ul id="pendingList">
-      <!-- Requests to accept/reject -->
+      <!-- Pending list -->
     </ul>
   </div>
 
-  <div class="section">
+  <div class="card">
     <h3>Accepted Favorites</h3>
     <ul id="acceptedList">
-      <!-- Accepted favorites -->
+      <!-- Accepted list -->
     </ul>
   </div>
 </div>
@@ -151,10 +216,14 @@
   function sendFollow() {
     const name = document.getElementById('favoriteInput').value.trim();
     if (name && name !== currentUser) {
-      pendingRequests.push(name);
-      localStorage.setItem('pendingRequests', JSON.stringify(pendingRequests));
-      document.getElementById('favoriteInput').value = '';
-      loadLists();
+      if (!pendingRequests.includes(name) && !favorites.includes(name)) {
+        pendingRequests.push(name);
+        localStorage.setItem('pendingRequests', JSON.stringify(pendingRequests));
+        document.getElementById('favoriteInput').value = '';
+        loadLists();
+      } else {
+        alert("Already requested or added.");
+      }
     } else {
       alert("Invalid name.");
     }
@@ -183,10 +252,11 @@
 
     pendingRequests.forEach(name => {
       const li = document.createElement('li');
-      li.innerHTML = `<span>${name}</span>
-        <div>
-          <button class="btn-small" onclick="acceptRequest('${name}')">Accept</button>
-          <button class="btn-small" onclick="rejectRequest('${name}')">Reject</button>
+      li.innerHTML = `
+        <span>${name}</span>
+        <div class="btn-group">
+          <button class="btn-small accept-btn" onclick="acceptRequest('${name}')">Accept</button>
+          <button class="btn-small reject-btn" onclick="rejectRequest('${name}')">Reject</button>
         </div>`;
       pendingList.appendChild(li);
     });
@@ -197,6 +267,18 @@
       acceptedList.appendChild(li);
     });
   }
+
+  document.getElementById('uploadPhoto').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const placeholder = document.getElementById('photoPlaceholder');
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        placeholder.innerHTML = `<img src="${e.target.result}" alt="Profile Photo">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
   window.onload = loadLists;
 </script>

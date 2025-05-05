@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Task Scheduler - Assign Subtasks</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -13,7 +13,7 @@
 
     body {
       margin: 0;
-      background: linear-gradient(to bottom right, #ffeef2, #f8bbd0, #b2ebf2);
+      background: linear-gradient(to bottom right, #f8bbd0, #b2ebf2, #f8bbd0);
       color: #fff;
       min-height: 100vh;
     }
@@ -35,7 +35,7 @@
       padding: 30px;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
       backdrop-filter: blur(10px);
     }
 
@@ -94,6 +94,7 @@
       margin-top: 20px;
       color: #90ee90;
       text-align: center;
+      font-size: 16px;
     }
 
     @media (max-width: 600px) {
@@ -116,22 +117,22 @@
 </nav>
 
 <div class="container">
-  <h2>Create Task & Assign Subtasks</h2>
+  <center><h2>Create Task & Assign Subtasks</h2></center>
 
-  <input type="text" id="mainTask" placeholder="Main Task Title">
-
-  <h3>Subtasks</h3>
+  <input type="text" id="mainTask" placeholder="Main Task Title" />
+  <br><br>
+  <center><h3>Subtasks</h3></center>
   <div id="subtasksContainer">
-    <input type="text" placeholder="Subtask 1">
+    <input type="text" placeholder="Subtask 1" />
   </div>
-  <button onclick="addSubtask()">+ Add Subtask</button>
-
-  <h3>Favorite People (Accepted Only)</h3>
+  <center><button onclick="addSubtask()">+ Add Subtask</button></center>
+  <br><br>
+<center><h3>Favorite People (Accepted Only)</h3></center>
   <select id="favoriteSelect">
-    <!-- Options will be inserted dynamically -->
+    <!-- Options inserted dynamically -->
   </select>
 
-  <button onclick="assignTask()">🎲 Assign Random Task</button>
+  <center><button onclick="assignTask()">🎲 Assign Random Task</button></center>
 
   <div class="assigned-box" id="assignedBox" style="display: none;">
     <p><strong>Assigned Subtask:</strong> <span id="assignedSubtask"></span></p>
@@ -140,8 +141,8 @@
 
   <div class="upload-box" id="uploadBox" style="display: none;">
     <label>Upload proof (image):</label>
-    <input type="file" id="proofUpload" accept="image/*">
-    <button onclick="submitProof()">Submit Proof</button>
+    <input type="file" id="proofUpload" accept="image/*" />
+  <center><button onclick="submitProof()">Submit Proof</button></center>
   </div>
 
   <div class="message" id="message"></div>
@@ -187,7 +188,7 @@
     const selectedPerson = document.getElementById('favoriteSelect').value;
 
     if (!subtasks.length || !selectedPerson) {
-      alert("Add at least one subtask and have accepted favorites.");
+      alert("Add at least one subtask and select a favorite.");
       return;
     }
 
@@ -222,8 +223,11 @@
     completed.push(taskEntry);
     localStorage.setItem('completedTasks', JSON.stringify(completed));
 
-    document.getElementById('message').innerText = `✅ Proof submitted for "${subtask}" assigned to ${person}.`;
+    document.getElementById('message').innerText = `✅ Your proof has been submitted.`;
     document.getElementById('uploadBox').style.display = 'none';
+
+    localStorage.removeItem('assignedSubtask');
+    localStorage.removeItem('favoritePerson');
   }
 
   window.onload = populateFavorites;

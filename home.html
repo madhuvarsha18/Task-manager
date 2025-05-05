@@ -1,4 +1,3 @@
-<!-- home.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,27 +6,31 @@
   <title>Task Scheduler - Home</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #ffeef2, #e0f7fa);
+      background: linear-gradient(to bottom right, #f8bbd0, #b2ebf2,#f8bbd0);
       min-height: 100vh;
     }
 
     nav {
-      background-color: #f48fb1;
-      color: white;
-      padding: 15px 30px;
+      background-color: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      color: #f5f2f3;
+      padding: 20px 40px;
+      font-size: 24px;
+      font-weight: 600;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    nav h1 {
-      font-size: 24px;
-      margin: 0;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     }
 
     .btn-container {
@@ -36,7 +39,7 @@
     }
 
     .icon-btn {
-      background: #f06292;
+      background: #fa5f95;
       color: white;
       padding: 10px 20px;
       border: none;
@@ -50,33 +53,49 @@
     }
 
     .icon-btn:hover {
-      background: #ec407a;
+      background: #e7306d;
     }
 
     .container {
       max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      margin: 60px auto;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
     }
 
     h2 {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       text-align: center;
-      color: #d81b60;
+      color: #f9f6f7;
+      font-size: 28px;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     }
 
     canvas {
       width: 100% !important;
       max-height: 400px;
+      background: #ffffffcc;
+      border-radius: 12px;
+      padding: 20px;
     }
 
     @media (max-width: 600px) {
+      nav {
+        font-size: 20px;
+        padding: 15px 20px;
+      }
+
       .icon-btn {
         font-size: 14px;
         padding: 8px 16px;
+      }
+
+      .container {
+        margin: 30px 15px;
+        padding: 20px;
       }
     }
   </style>
@@ -106,7 +125,7 @@
   }
 
   function goToTasks() {
-    window.location.href = "dahboard.html";
+    window.location.href = "dahboard.html"; // Update path if different
   }
 
   const ctx = document.getElementById('performanceChart').getContext('2d');
@@ -135,7 +154,7 @@
           label: 'Subtasks Completed',
           data,
           backgroundColor: gradient,
-          borderRadius: 6,
+          borderRadius: 10,
           borderSkipped: false
         }]
       },
@@ -153,12 +172,14 @@
           y: {
             beginAtZero: true,
             ticks: {
-              color: '#d81b60'
+              color: '#ec407a',
+              font: { weight: 'bold' }
             }
           },
           x: {
             ticks: {
-              color: '#d81b60'
+              color: '#ec407a',
+              font: { weight: 'bold' }
             }
           }
         }
